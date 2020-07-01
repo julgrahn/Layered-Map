@@ -7,6 +7,11 @@ lon = list(dataVolcanoes["LON"])
 elevation = list(dataVolcanoes["ELEV"])
 name = list(dataVolcanoes["NAME"])
 
+dataBars = pandas.read_csv("Bars.txt")
+latB = list(dataBars["LAT"])
+lonB = list(dataBars["LON"])
+barName = list(dataBars["BARNAME"])
+
 html = """
 <p style = "font-family:verdana">
 Volcano name:<br>
@@ -32,13 +37,19 @@ for lt, ln, el, name in zip(lat, lon, elevation, name):
     featureGroupVolcano.add_child(folium.CircleMarker(location = [lt, ln], radius = 6, 
     popup = folium.Popup(iframe), fill = True, fill_color = color_changer(el), color = 'grey', fill_opacity = 0.7))
 
-featureGroupPopulation = folium.FeatureGroup(name = "My Map")
+featureGroupPopulation = folium.FeatureGroup(name = "Population")
 
 featureGroupPopulation.add_child(folium.GeoJson(data = open("world.json", 'r', encoding = 'utf-8-sig').read(), 
 style_function = lambda x: {'fillColor': 'green' if x['properties']['POP2005'] < 10000000
 else 'orange' if 10000000 <= x ['properties']['POP2005'] < 25000000 else 'red'}))
 
+featureGroupBars = folium.FeatureGroup(name = "Bars in Stockholm")
+
+for ltB, lnB, nameB in zip(latB, lonB, barName):
+    featureGroupBars.add_child(folium.Marker(location = [ltB, lnB], popup = str(nameB), color = "yellow"))
+
 map.add_child(featureGroupVolcano)
 map.add_child(featureGroupPopulation)
+map.add_child(featureGroupBars)
 map.add_child(folium.LayerControl())
 map.save("Map_html_popups.html")

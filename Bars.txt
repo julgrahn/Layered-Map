@@ -1,0 +1,5 @@
+NUMBER,BARNAME,LAT,LON
+1,Bishop's Arms Bellmansgatan,59.320083,18.064670
+2,Akkurat,59.319980,18.068660
+3,Waza Restaurang & Bryggeri,59.336353,18.052593
+4,Omnipollos Hatt,59.318168,18.072281
