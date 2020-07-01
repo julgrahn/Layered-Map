@@ -29,20 +29,14 @@ def color_changer(volElevation):
     else:
         return 'red'
 
-map = folium.Map(location = [59.19124, 18.03528], zoom_start = 10, tiles = "Stamen Terrain")
-
-featureGroupPopulation = folium.FeatureGroup(name = "Population")
-
-featureGroupPopulation.add_child(folium.GeoJson(data = open("world.json", 'r', encoding = 'utf-8-sig').read(), 
-style_function = lambda x: {'fillColor': 'green' if x['properties']['POP2005'] < 10000000
-else 'orange' if 10000000 <= x ['properties']['POP2005'] < 25000000 else 'red'}))
+map = folium.Map(location = [59.19124, 18.03528], zoom_start = 10, tiles = "CartoDB positron")
 
 featureGroupVolcano = folium.FeatureGroup(name = "Volcanoes")
 
 for lt, ln, el, name in zip(lat, lon, elevation, name):
     iframe = folium.IFrame(html = html % (name, name, el), width = 200, height = 70)
 
-    featureGroupVolcano.add_child(folium.CircleMarker(location = [lt, ln], radius = 6, 
+    featureGroupVolcano.add_child(folium.CircleMarker(location = [lt, ln], radius = 8, 
     popup = folium.Popup(iframe), fill = True, fill_color = color_changer(el), color = 'grey', fill_opacity = 0.7))
 
 htmlBar = """
@@ -60,8 +54,14 @@ for nr, ltB, lnB, nameB, addr in zip(barNumber, latB, lonB, barName, barAddress)
 
     featureGroupBars.add_child(folium.Marker(location = [ltB, lnB], popup = folium.Popup(iframeBar), color = "yellow"))
 
+featureGroupPopulation = folium.FeatureGroup(name = "Population")
+
+featureGroupPopulation.add_child(folium.GeoJson(data = open("world.json", 'r', encoding = 'utf-8-sig').read(),
+style_function = lambda x: {'fillColor': 'green' if x['properties']['POP2005'] < 10000000
+else 'orange' if 10000000 <= x ['properties']['POP2005'] < 25000000 else 'red'}))
+
+map.add_child(featureGroupPopulation)
 map.add_child(featureGroupVolcano)
 map.add_child(featureGroupBars)
-map.add_child(featureGroupPopulation)
-map.add_child(folium.LayerControl())
+map.add_child(folium.LayerControl(position = "bottomleft", collapsed = False, autoZIndex = False))
 map.save("Map_html_popups.html")
