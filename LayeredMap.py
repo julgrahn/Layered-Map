@@ -32,6 +32,8 @@ for lt, ln, el, name in zip(lat, lon, elevation, name):
     featureGroup.add_child(folium.CircleMarker(location = [lt, ln], radius = 6, 
     popup = folium.Popup(iframe), fill = True, fill_color = color_changer(el), color = 'grey', fill_opacity = 0.7))
 
+featureGroup.add_child(folium.GeoJson(data = (open("world.json", 'r', encoding = 'utf-8-sig').read())))
+
 
 map.add_child(featureGroup)
 map.save("Map_html_popups.html")
