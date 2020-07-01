@@ -11,6 +11,7 @@ dataBars = pandas.read_csv("Bars.txt")
 latB = list(dataBars["LAT"])
 lonB = list(dataBars["LON"])
 barName = list(dataBars["BARNAME"])
+barNumber = list(dataBars["NUMBER"])
 
 html = """
 <p style = "font-family:verdana">
@@ -43,10 +44,19 @@ featureGroupPopulation.add_child(folium.GeoJson(data = open("world.json", 'r', e
 style_function = lambda x: {'fillColor': 'green' if x['properties']['POP2005'] < 10000000
 else 'orange' if 10000000 <= x ['properties']['POP2005'] < 25000000 else 'red'}))
 
+htmlBar = """
+<p style = "font-family:verdana">
+Bar name:<br>
+<a href = "https://www.google.com/search?q=%s" target="_blank">%s</a><br>
+Ranking: %s </p>
+"""
+
 featureGroupBars = folium.FeatureGroup(name = "Bars in Stockholm")
 
-for ltB, lnB, nameB in zip(latB, lonB, barName):
-    featureGroupBars.add_child(folium.Marker(location = [ltB, lnB], popup = str(nameB), color = "yellow"))
+for nr, ltB, lnB, nameB in zip(barNumber, latB, lonB, barName):
+    iframeBar = folium.IFrame(html = htmlBar % (nameB, nameB, nr), width = 150, height = 100)
+
+    featureGroupBars.add_child(folium.Marker(location = [ltB, lnB], popup = folium.Popup(iframeBar), color = "yellow"))
 
 map.add_child(featureGroupVolcano)
 map.add_child(featureGroupPopulation)
