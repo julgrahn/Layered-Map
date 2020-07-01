@@ -14,13 +14,21 @@ Volcano name:<br>
 Height: %s m</p>
 """
 
+def color_changer(volElevation):
+    if volElevation < 1500:
+        return 'green'
+    elif 1500 <= volElevation <= 2500:
+        return 'orange'
+    else:
+        return 'red'
+
 map = folium.Map(location = [59.19124, 18.03528], zoom_start = 10, tiles = "Stamen Terrain")
 
 featureGroup = folium.FeatureGroup(name = "My Map")
 
 for lt, ln, el, name in zip(lat, lon, elevation, name):
     iframe = folium.IFrame(html = html % (name, name, el), width = 200, height = 100)
-    featureGroup.add_child(folium.Marker(location = [lt, ln], popup = folium.Popup(iframe), icon = folium.Icon(color = "green")))
+    featureGroup.add_child(folium.Marker(location = [lt, ln], popup = folium.Popup(iframe), icon = folium.Icon(color = color_changer(el))))
 
 
 map.add_child(featureGroup)
